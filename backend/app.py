@@ -54,10 +54,9 @@ login_manager.init_app(app)
 @login_manager.unauthorized_handler
 def unauthorized():
     return jsonify({"error": "Unauthorized"}), 401
-
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    return db.session.get(Admin, int(user_id))
 
 # ===== RUN =====
 if __name__ == '__main__':
