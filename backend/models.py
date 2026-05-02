@@ -4,6 +4,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(100), nullable=False)
@@ -22,7 +23,7 @@ class Opportunity(db.Model):
     name = db.Column(db.String(150), nullable=False)
     duration = db.Column(db.String(50), nullable=False)
 
-    start_date = db.Column(db.Date, nullable=False)
+    start_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
 
     description = db.Column(db.Text, nullable=False)
     skills = db.Column(db.Text, nullable=False)
@@ -38,7 +39,7 @@ class Opportunity(db.Model):
     ), nullable=False)
 
     future_opportunities = db.Column(db.Text, nullable=False)
-    max_applicants = db.Column(db.Integer, nullable=True)
+    max_applicants = db.Column(db.Integer)
 
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
 
