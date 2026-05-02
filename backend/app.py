@@ -17,7 +17,7 @@ app.config.from_object(Config)
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_DOMAIN'] = None
-
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400
 CORS(app,
      supports_credentials=True,
      resources={r"/*": {"origins": "https://guatar-foundation-admin-1.onrender.com"}})
