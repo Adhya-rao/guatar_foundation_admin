@@ -21,9 +21,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE="None",
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
-    PERMANENT_SESSION_LIFETIME=86400
 )
-
 CORS(app,
      supports_credentials=True,
      resources={r"/*": {
