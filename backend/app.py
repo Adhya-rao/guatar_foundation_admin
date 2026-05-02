@@ -17,16 +17,17 @@ app.config.from_object(Config)
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_DOMAIN'] = None
-app.config['PERMANENT_SESSION_LIFETIME'] = 86400
+app.config.update(
+    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    PERMANENT_SESSION_LIFETIME=86400
+)
+
 CORS(app,
      supports_credentials=True,
      resources={r"/*": {
-         "origins": [
-             "https://guatar-foundation-admin-1.onrender.com"
-         ]
+         "origins": ["https://guatar-foundation-admin-1.onrender.com"]
      }})
 
 db.init_app(app)
