@@ -149,7 +149,10 @@ def create_opportunity():
     
 @login_required
 def get_opportunities():
+     print("DEBUG:", current_user.is_authenticated, current_user.id)
+
     ops = Opportunity.query.filter_by(admin_id=current_user.id).all()
+  
     result = []
     for op in ops:
         result.append({
@@ -167,6 +170,7 @@ def get_opportunities():
 
 @login_required
 def get_opportunity(op_id):
+    
     op = Opportunity.query.filter_by(id=op_id, admin_id=current_user.id).first()
     if not op:
         return jsonify({"error": "Not found"}), 404
