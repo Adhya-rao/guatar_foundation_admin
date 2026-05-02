@@ -16,19 +16,22 @@ app.config.from_object(Config)
 
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True
-CORS(app, supports_credentials=True, origins=[
-    "https://guatar-foundation-admin-1.onrender.com"
-])
+app.config['SESSION_COOKIE_DOMAIN'] = None
+
+CORS(app,
+     supports_credentials=True,
+     resources={r"/*": {"origins": "https://guatar-foundation-admin-1.onrender.com"}})
 
 db.init_app(app)
 
-# Routes
+# ===== ROUTES =====
 app.add_url_rule('/signup', 'signup', signup, methods=['POST'])
 app.add_url_rule('/login', 'login', login, methods=['POST'])
 app.add_url_rule('/logout', 'logout', logout, methods=['POST'])
 app.add_url_rule('/forgot-password', 'forgot_password', forgot_password, methods=['POST'])
 app.add_url_rule('/reset-password/<token>', 'reset_password', reset_password, methods=['POST'])
 
+# Opportunities
 app.add_url_rule('/opportunities', 'create_opportunity', create_opportunity, methods=['POST'])
 app.add_url_rule('/opportunities', 'get_opportunities', get_opportunities, methods=['GET'])
 app.add_url_rule('/opportunities/<int:op_id>', 'get_opportunity', get_opportunity, methods=['GET'])
@@ -37,8 +40,7 @@ app.add_url_rule('/opportunities/<int:op_id>', 'delete_opportunity', delete_oppo
 
 @app.route('/')
 def home():
-    return "Backend is running "
-
+    return "Backend is running"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -51,3 +53,6 @@ def unauthorized():
 def load_user(user_id):
     return Admin.query.get(int(user_id))
 
+# ===== RUN =====
+if __name__ == '__main__':
+    app.run(debug=True)
