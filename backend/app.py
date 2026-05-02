@@ -16,8 +16,9 @@ app.config.from_object(Config)
 
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True
-
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=[
+    "https://guatar-foundation-admin-1.onrender.com"
+])
 
 db.init_app(app)
 
