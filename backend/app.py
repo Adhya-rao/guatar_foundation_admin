@@ -20,7 +20,11 @@ app.config['SESSION_COOKIE_DOMAIN'] = None
 app.config['PERMANENT_SESSION_LIFETIME'] = 86400
 CORS(app,
      supports_credentials=True,
-     resources={r"/*": {"origins": "https://guatar-foundation-admin-1.onrender.com"}})
+     resources={r"/*": {
+         "origins": [
+             "https://guatar-foundation-admin-1.onrender.com"
+         ]
+     }})
 
 db.init_app(app)
 
