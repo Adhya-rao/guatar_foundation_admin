@@ -361,24 +361,36 @@ const method = editId ? 'PUT' : 'POST';
         max_applicants: maxApplicants
     })
 })
-.then(res => res.json())
+.then(res => {
+    if (res.status === 401) {
+        showToast("Session expired. Please login again.");
+        return null;
+    }
+    return res.json();
+})
 .then(data => {
+    if (!data) return;
+
     if (data.message) {
         showToast(editId ? 'Updated successfully!' : 'Opportunity created!');
         closeOpportunityModal();
-        this.reset();
-        editId = null; // ✅ FIX
+        document.getElementById('opportunityForm').reset();
+        editId = null;
         loadOpportunities();
-    } else {
-        showToast(data.error);
+        return;
     }
+
+    if (data.error) {
+        showToast(data.error);
+        return;
+    }
+
+    console.error("Unexpected response:", data);
 })
 .catch(err => {
     console.error(err);
     showToast('Server error');
 });
-});
-
 function loadOpportunities() {
     fetch('https://guatar-foundation-admin.onrender.com/opportunities', {
         credentials: 'include'
