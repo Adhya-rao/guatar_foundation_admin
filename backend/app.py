@@ -4,7 +4,6 @@ from models import db, Admin
 from flask_login import LoginManager
 from flask_cors import CORS
 
-# import all route functions
 from routes import (
     signup, login, logout,
     forgot_password, reset_password,
@@ -13,21 +12,22 @@ from routes import (
 )
 
 app = Flask(__name__)
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-app.config['SESSION_COOKIE_SECURE'] = False
 app.config.from_object(Config)
+
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
+
 CORS(app, supports_credentials=True)
 
 db.init_app(app)
 
-# authentication routes
+# Routes
 app.add_url_rule('/signup', 'signup', signup, methods=['POST'])
 app.add_url_rule('/login', 'login', login, methods=['POST'])
 app.add_url_rule('/logout', 'logout', logout, methods=['POST'])
 app.add_url_rule('/forgot-password', 'forgot_password', forgot_password, methods=['POST'])
 app.add_url_rule('/reset-password/<token>', 'reset_password', reset_password, methods=['POST'])
 
-# opportunity routes
 app.add_url_rule('/opportunities', 'create_opportunity', create_opportunity, methods=['POST'])
 app.add_url_rule('/opportunities', 'get_opportunities', get_opportunities, methods=['GET'])
 app.add_url_rule('/opportunities/<int:op_id>', 'get_opportunity', get_opportunity, methods=['GET'])
@@ -50,8 +50,5 @@ def unauthorized():
 def load_user(user_id):
     return Admin.query.get(int(user_id))
 
-
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  
-    
+with app.app_context():
+    db.create_all()
