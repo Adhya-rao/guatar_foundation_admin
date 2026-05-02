@@ -12,9 +12,6 @@ def login():
     password = data.get('password')
     remember = data.get('remember', False)
 
-    if not email or not password:
-        return jsonify({"error": "Email and password required"}), 400
-
     user = Admin.query.filter_by(email=email).first()
 
     if not user or not check_password_hash(user.password_hash, password):
@@ -22,7 +19,9 @@ def login():
 
     login_user(user, remember=remember)
 
-    session.permanent = True  
+    session['user_id'] = user.id
+    session.permanent = True
+    session.modified = True
 
     return jsonify({"message": "Login successful"}), 200
 
