@@ -334,9 +334,8 @@ document.getElementById('opportunityForm').addEventListener('submit', function (
     const futureOpportunities = document.getElementById('oppFuture').value.trim();
     const maxApplicants = document.getElementById('oppMaxApplicants').value.trim();
     const url = editId
-    ? `http://127.0.0.1:5000/opportunities/${editId}`
-    : 'http://127.0.0.1:5000/opportunities';
-
+    ? `https://guatar-foundation-admin.onrender.com/opportunities/${editId}`
+    : 'https://guatar-foundation-admin.onrender.com/opportunities';
 const method = editId ? 'PUT' : 'POST';
 
     if (!name || !duration || !startDate || !description || !skillsRaw || !category || !futureOpportunities) {
@@ -381,7 +380,7 @@ const method = editId ? 'PUT' : 'POST';
 });
 
 function loadOpportunities() {
-    fetch('http://127.0.0.1:5000/opportunities', {
+    fetch('https://guatar-foundation-admin.onrender.com/opportunities', {
         credentials: 'include'
     })
     
@@ -413,7 +412,7 @@ function loadOpportunities() {
 }
 
 function deleteOpportunity(id) {
-    fetch(`http://127.0.0.1:5000/opportunities/${id}`, {
+    fetch(`https://guatar-foundation-admin.onrender.com/opportunities/${id}`, {
         method: 'DELETE',
         credentials: 'include'
     })
@@ -424,7 +423,7 @@ function deleteOpportunity(id) {
     });
 }
 function editOpportunity(id) {
-    fetch(`http://127.0.0.1:5000/opportunities/${id}`, {
+    fetch(`https://guatar-foundation-admin.onrender.com/opportunities/${id}`, {
         credentials: 'include'
     })
     .then(res => res.json())
@@ -706,7 +705,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         return;
     }
 
-    fetch('http://127.0.0.1:5000/login', {
+   fetch('https://guatar-foundation-admin.onrender.com/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -788,7 +787,7 @@ document.getElementById('signupForm').addEventListener('submit', function (e) {
         return;
     }
 
-    fetch('http://127.0.0.1:5000/signup', {
+  fetch('https://guatar-foundation-admin.onrender.com/signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -851,7 +850,7 @@ document.getElementById('forgotForm').addEventListener('submit', function (e) {
         return;
     }
 
-    fetch('http://127.0.0.1:5000/forgot-password', {
+   fetch('https://guatar-foundation-admin.onrender.com/forgot-password', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
