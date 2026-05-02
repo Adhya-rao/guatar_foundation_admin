@@ -4,6 +4,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer
 import re
+from flask import session
+
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    remember = data.get('remember', False)
+
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
+    user = Admin.query.filter_by(email=email).first()
+
+    if not user or not check_password_hash(user.password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    login_user(user, remember=remember)
+
+    session.permanent = True  
+
+    return jsonify({"message": "Login successful"}), 200
 
 def signup():
     data = request.get_json()
@@ -26,19 +47,6 @@ def signup():
     db.session.add(new_admin)
     db.session.commit()
     return jsonify({"message": "Signup successful"}), 201
-
-def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-    remember = data.get('remember', False)
-    if not email or not password:
-        return jsonify({"error": "Email and password required"}), 400
-    user = Admin.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid email or password"}), 401
-    login_user(user, remember=remember)
-    return jsonify({"message": "Login successful"}), 200
 
 @login_required
 def logout():
