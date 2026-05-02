@@ -50,5 +50,3 @@ def unauthorized():
 def load_user(user_id):
     return Admin.query.get(int(user_id))
 
-with app.app_context():
-    db.create_all()
