@@ -1,4 +1,5 @@
-const captchas = { login:'', signup:'', forgot:'' };
+const captchas = { login: '', signup: '', forgot: '' };
+let editId = null;
 function generateCaptcha(type) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     let code = '';
@@ -6,6 +7,7 @@ function generateCaptcha(type) {
     captchas[type] = code;
     document.getElementById(type + 'CaptchaText').textContent = code;
 }
+
 generateCaptcha('login');
 generateCaptcha('signup');
 generateCaptcha('forgot');
@@ -33,16 +35,22 @@ function showError(id, msg) {
     if (msg) el.querySelector('span').textContent = msg;
     el.classList.add('show');
 }
+
 function clearAllErrors(formId) {
     document.querySelectorAll('#' + formId + ' .error-msg').forEach(e => e.classList.remove('show'));
     document.querySelectorAll('#' + formId + ' input').forEach(i => i.classList.remove('error'));
 }
+
 function shakeForm(formId) {
     const form = document.getElementById(formId);
     form.classList.add('shake');
     setTimeout(() => form.classList.remove('shake'), 400);
 }
-function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function showToast(msg) {
     document.getElementById('toastMsg').textContent = msg;
     document.getElementById('toast').classList.add('show');
@@ -55,8 +63,8 @@ function checkStrength(val) {
     if (/[A-Z]/.test(val)) score++;
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-    const labels = ['','Weak','Medium','Strong','Very Strong'];
-    const classes = ['','weak','medium','strong','very-strong'];
+    const labels = ['', 'Weak', 'Medium', 'Strong', 'Very Strong'];
+    const classes = ['', 'weak', 'medium', 'strong', 'very-strong'];
     for (let i = 1; i <= 4; i++) {
         const bar = document.getElementById('str' + i);
         bar.className = 'strength-bar';
@@ -71,13 +79,11 @@ function showDashboard(email) {
     document.getElementById('dashboardWrapper').classList.add('active');
     document.body.style.alignItems = 'stretch';
 
-    // Personalize
     const name = email.split('@')[0];
     const displayName = name.charAt(0).toUpperCase() + name.slice(1);
     document.getElementById('dashName').textContent = displayName;
     document.getElementById('dashAvatar').textContent = displayName.substring(0, 2).toUpperCase();
 
-    // Show menu toggle on mobile
     if (window.innerWidth <= 768) {
         document.getElementById('menuToggle').style.display = 'flex';
     }
@@ -93,15 +99,13 @@ function handleLogout() {
 
 // ===== NAV ITEMS =====
 document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function () {
         const page = this.getAttribute('data-page');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
-        
-        // Hide all sections
+
         document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
-        
-        // Show selected section
+
         if (page === 'dashboard') {
             document.getElementById('dashboardSection').classList.add('active');
             document.getElementById('pageTitle').textContent = 'Dashboard';
@@ -126,7 +130,6 @@ document.querySelectorAll('.nav-item[data-page]').forEach(item => {
 
 // ===== TABS =====
 function changeChartPeriod(period) {
-    // Update active tab
     document.querySelectorAll('.tabs .tab-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.textContent.toLowerCase() === period) {
@@ -134,7 +137,6 @@ function changeChartPeriod(period) {
         }
     });
 
-    // Chart data for different periods
     const chartData = {
         daily: 'M0,120 Q50,110 100,90 T200,70 T300,50 T400,40',
         weekly: 'M0,110 Q50,95 100,85 T200,65 T300,45 T400,35',
@@ -145,7 +147,7 @@ function changeChartPeriod(period) {
 
     const linePath = document.getElementById('linePath');
     const lineArea = document.getElementById('lineArea');
-    
+
     const path = chartData[period];
     linePath.setAttribute('d', path);
     lineArea.setAttribute('d', path + ' L400,150 L0,150 Z');
@@ -164,8 +166,7 @@ function markAllRead() {
     showToast('All notifications marked as read');
 }
 
-// Close notification dropdown when clicking outside
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const dropdown = document.getElementById('notificationDropdown');
     const btn = document.getElementById('notifBtn');
     if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
@@ -179,8 +180,7 @@ function toggleTheme() {
     const currentTheme = html.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', newTheme);
-    
-    // Update icon
+
     const icon = document.getElementById('themeIcon');
     if (newTheme === 'dark') {
         icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
@@ -199,8 +199,7 @@ function closeSearch() {
     document.getElementById('searchContainer').classList.remove('active');
 }
 
-// Close search on Escape key
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeSearch();
         closeCourseModal();
@@ -215,8 +214,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Close search when clicking outside
-document.getElementById('searchContainer').addEventListener('click', function(e) {
+document.getElementById('searchContainer').addEventListener('click', function (e) {
     if (e.target === this) {
         closeSearch();
     }
@@ -236,8 +234,7 @@ function closeCourseModal() {
     document.getElementById('courseModal').classList.remove('active');
 }
 
-// Close modal when clicking outside
-document.getElementById('courseModal').addEventListener('click', function(e) {
+document.getElementById('courseModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeCourseModal();
     }
@@ -252,7 +249,7 @@ function openOpportunityDetails(title, details) {
     document.getElementById('opportunityDetailDescription').textContent = details.description;
     document.getElementById('opportunityDetailFuture').textContent = details.futureOpportunities;
     document.getElementById('opportunityDetailPrereqs').textContent = details.prerequisites;
-    
+
     const skillsContainer = document.getElementById('opportunityDetailSkills');
     skillsContainer.innerHTML = '';
     details.skills.forEach(skill => {
@@ -261,7 +258,7 @@ function openOpportunityDetails(title, details) {
         tag.textContent = skill;
         skillsContainer.appendChild(tag);
     });
-    
+
     document.getElementById('opportunityDetailsModal').classList.add('active');
 }
 
@@ -274,7 +271,7 @@ function applyToOpportunity() {
     closeOpportunityDetailsModal();
 }
 
-document.getElementById('opportunityDetailsModal').addEventListener('click', function(e) {
+document.getElementById('opportunityDetailsModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeOpportunityDetailsModal();
     }
@@ -293,20 +290,17 @@ function closeCollaboratorCoursesModal() {
 
 function approveCourse(courseName) {
     showToast(courseName + ' has been approved!');
-    // In a real app, you would update the course status here
 }
 
 function rejectCourse(courseName) {
     showToast(courseName + ' has been rejected.');
-    // In a real app, you would update the course status here
 }
 
 function viewCourseDetails(courseName) {
     showToast('Viewing details for ' + courseName);
-    // In a real app, you would open a detailed course modal
 }
 
-document.getElementById('collaboratorCoursesModal').addEventListener('click', function(e) {
+document.getElementById('collaboratorCoursesModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeCollaboratorCoursesModal();
     }
@@ -321,100 +315,145 @@ function closeOpportunityModal() {
     document.getElementById('opportunityModal').classList.remove('active');
 }
 
-// Close modal when clicking outside
-document.getElementById('opportunityModal').addEventListener('click', function(e) {
+document.getElementById('opportunityModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeOpportunityModal();
     }
 });
 
 // Handle opportunity form submission
-        document.getElementById('opportunityForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+document.getElementById('opportunityForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-            // collect values
-            const name = document.getElementById('oppName').value.trim();
-            const duration = document.getElementById('oppDuration').value.trim();
-            const startDate = document.getElementById('oppStartDate').value;
-            const description = document.getElementById('oppDescription').value.trim();
-            const skillsRaw = document.getElementById('oppSkills').value.trim();
-            const category = document.getElementById('oppCategory').value;
-            const futureOpportunities = document.getElementById('oppFuture').value.trim();
-            const maxApplicants = document.getElementById('oppMaxApplicants').value.trim();
+    const name = document.getElementById('oppName').value.trim();
+    const duration = document.getElementById('oppDuration').value.trim();
+    const startDate = document.getElementById('oppStartDate').value;
+    const description = document.getElementById('oppDescription').value.trim();
+    const skillsRaw = document.getElementById('oppSkills').value.trim();
+    const category = document.getElementById('oppCategory').value.trim();
+    const futureOpportunities = document.getElementById('oppFuture').value.trim();
+    const maxApplicants = document.getElementById('oppMaxApplicants').value.trim();
+    const url = editId
+    ? `http://127.0.0.1:5000/opportunities/${editId}`
+    : 'http://127.0.0.1:5000/opportunities';
 
-            // basic validation
-            if (!name || !duration || !startDate || !description || !skillsRaw || !category || !futureOpportunities) {
-                showToast('Please fill all required fields');
-                return;
-            }
+const method = editId ? 'PUT' : 'POST';
 
-            // parse skills
-            const skills = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
+    if (!name || !duration || !startDate || !description || !skillsRaw || !category || !futureOpportunities) {
+        showToast('Please fill all required fields');
+        return;
+    }
 
-            // create opportunity card element
+    // SEND TO BACKEND
+    fetch(url, {
+    method: method,
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        name,
+        duration,
+        start_date: startDate,
+        description,
+        skills: skillsRaw,
+        category,
+        future_opportunities: futureOpportunities,
+        max_applicants: maxApplicants
+    })
+})
+.then(res => res.json())
+.then(data => {
+    if (data.message) {
+        showToast(editId ? 'Updated successfully!' : 'Opportunity created!');
+        closeOpportunityModal();
+        this.reset();
+        editId = null; // ✅ FIX
+        loadOpportunities();
+    } else {
+        showToast(data.error);
+    }
+})
+.catch(err => {
+    console.error(err);
+    showToast('Server error');
+});
+});
+
+function loadOpportunities() {
+    fetch('http://127.0.0.1:5000/opportunities', {
+        credentials: 'include'
+    })
+    
+    .then(res => res.json())
+    .then(data => {
+        const grid = document.querySelector('.opportunities-grid');
+        grid.innerHTML = '';
+
+        data.forEach(op => {
             const card = document.createElement('div');
             card.className = 'opportunity-card';
 
-            // header and meta
-            const headerHtml = `
-                <div class="opportunity-card-header">
-                    <h5>${escapeHtml(name)}</h5>
-                    <div class="opportunity-meta">
-                        <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeHtml(duration)}</span>
-                        <span><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${escapeHtml(startDate)}</span>
-                    </div>
-                </div>
-                <p class="opportunity-description">${escapeHtml(description)}</p>
+            card.innerHTML = `
+                <h5>${op.name}</h5>
+    <p>${op.description}</p>
+
+    <p><b>Category:</b> ${op.category}</p>
+    <p><b>Duration:</b> ${op.duration}</p>
+    <p><b>Start:</b> ${op.start_date}</p>
+
+    <button onclick="viewOpportunity('${encodeURIComponent(JSON.stringify(op))}')">View</button>
+    <button onclick="editOpportunity(${op.id})">Edit</button>
+    <button onclick="deleteOpportunity(${op.id})">Delete</button>
             `;
 
-            // skills tags
-            const skillsHtml = `<div class="opportunity-skills"><div class="opportunity-skills-label">Skills You'll Gain</div><div class="skills-tags">
-                ${skills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('')}
-            </div></div>`;
-
-            // footer
-            const applicantsCount = maxApplicants ? `${parseInt(maxApplicants,10)} applicants` : '0 applicants';
-            const footerHtml = `
-                <div class="opportunity-footer">
-                    <span class="applicants-count">${escapeHtml(applicantsCount)}</span>
-                    <button class="view-course-btn" style="width: auto; padding: 8px 16px;">View Details</button>
-                </div>
-            `;
-
-            card.innerHTML = headerHtml + skillsHtml + footerHtml;
-
-            // wire up the View Details button to open details modal
-            const viewBtn = card.querySelector('.view-course-btn');
-            viewBtn.addEventListener('click', function() {
-                openOpportunityDetails(name, {
-                    duration: duration,
-                    startDate: startDate,
-                    description: description,
-                    skills: skills,
-                    applicants: maxApplicants ? parseInt(maxApplicants,10) : 0,
-                    futureOpportunities: futureOpportunities,
-                    prerequisites: ''
-                });
-            });
-
-            // append to grid
-            const grid = document.querySelector('.opportunities-grid');
-            if (grid) grid.appendChild(card);
-
-            showToast('Opportunity created successfully!');
-            closeOpportunityModal();
-            this.reset();
+            grid.appendChild(card);
         });
+    });
+}
 
-        // small helper to avoid HTML injection when inserting text
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
+function deleteOpportunity(id) {
+    fetch(`http://127.0.0.1:5000/opportunities/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(() => {
+        showToast('Deleted!');
+        loadOpportunities();
+    });
+}
+function editOpportunity(id) {
+    fetch(`http://127.0.0.1:5000/opportunities/${id}`, {
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(op => {
+        // OPEN SAME MODAL
+        openOpportunityModal();
+
+        // FILL FORM WITH EXISTING DATA
+        document.getElementById('oppName').value = op.name;
+        document.getElementById('oppDuration').value = op.duration;
+        document.getElementById('oppStartDate').value = op.start_date;
+        document.getElementById('oppDescription').value = op.description;
+        document.getElementById('oppSkills').value = op.skills;
+        document.getElementById('oppCategory').value = op.category;
+        document.getElementById('oppFuture').value = op.future_opportunities;
+        document.getElementById('oppMaxApplicants').value = op.max_applicants || '';
+
+         editId = id;
+    });
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 // ===== QUICK ADD STUDENT MODAL =====
 function openQuickAddModal() {
@@ -425,13 +464,13 @@ function closeQuickAddModal() {
     document.getElementById('quickAddModal').classList.remove('active');
 }
 
-document.getElementById('quickAddModal').addEventListener('click', function(e) {
+document.getElementById('quickAddModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeQuickAddModal();
     }
 });
 
-document.getElementById('quickAddForm').addEventListener('submit', function(e) {
+document.getElementById('quickAddForm').addEventListener('submit', function (e) {
     e.preventDefault();
     showToast('Student added successfully! Email invitation sent.');
     closeQuickAddModal();
@@ -447,13 +486,13 @@ function closeBulkUploadModal() {
     document.getElementById('bulkUploadModal').classList.remove('active');
 }
 
-document.getElementById('bulkUploadModal').addEventListener('click', function(e) {
+document.getElementById('bulkUploadModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeBulkUploadModal();
     }
 });
 
-document.getElementById('bulkUploadForm').addEventListener('submit', function(e) {
+document.getElementById('bulkUploadForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const fileInput = document.getElementById('csvFileInput');
     if (fileInput.files.length === 0) {
@@ -493,13 +532,13 @@ function closeQuickAddVerifierModal() {
     document.getElementById('quickAddVerifierModal').classList.remove('active');
 }
 
-document.getElementById('quickAddVerifierModal').addEventListener('click', function(e) {
+document.getElementById('quickAddVerifierModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeQuickAddVerifierModal();
     }
 });
 
-document.getElementById('quickAddVerifierForm').addEventListener('submit', function(e) {
+document.getElementById('quickAddVerifierForm').addEventListener('submit', function (e) {
     e.preventDefault();
     showToast('Verifier added successfully! Email invitation sent.');
     closeQuickAddVerifierModal();
@@ -515,13 +554,13 @@ function closeBulkUploadVerifierModal() {
     document.getElementById('bulkUploadVerifierModal').classList.remove('active');
 }
 
-document.getElementById('bulkUploadVerifierModal').addEventListener('click', function(e) {
+document.getElementById('bulkUploadVerifierModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeBulkUploadVerifierModal();
     }
 });
 
-document.getElementById('bulkUploadVerifierForm').addEventListener('submit', function(e) {
+document.getElementById('bulkUploadVerifierForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const fileInput = document.getElementById('csvVerifierFileInput');
     if (fileInput.files.length === 0) {
@@ -558,8 +597,7 @@ function openVerifierDetails(name, stats) {
     document.getElementById('verifierTotalStudents').textContent = stats.totalStudents;
     document.getElementById('verifierCertified').textContent = stats.certified;
     document.getElementById('verifierInProgress').textContent = stats.inProgress;
-    
-    // Populate subjects
+
     const container = document.getElementById('subjectsContainer');
     container.innerHTML = '';
     stats.subjects.forEach(subject => {
@@ -571,7 +609,7 @@ function openVerifierDetails(name, stats) {
         `;
         container.appendChild(div);
     });
-    
+
     document.getElementById('verifierDetailsModal').classList.add('active');
 }
 
@@ -579,7 +617,7 @@ function closeVerifierDetailsModal() {
     document.getElementById('verifierDetailsModal').classList.remove('active');
 }
 
-document.getElementById('verifierDetailsModal').addEventListener('click', function(e) {
+document.getElementById('verifierDetailsModal').addEventListener('click', function (e) {
     if (e.target === this) {
         closeVerifierDetailsModal();
     }
@@ -588,22 +626,16 @@ document.getElementById('verifierDetailsModal').addEventListener('click', functi
 // ===== STUDENT FILTERS =====
 function filterStudents() {
     const statusFilter = document.getElementById('statusFilter').value;
-    const dateFrom = document.getElementById('dateFrom').value;
-    const dateTo = document.getElementById('dateTo').value;
-    
     const rows = document.querySelectorAll('#studentsTableBody tr');
-    
+
     rows.forEach(row => {
         const rowStatus = row.getAttribute('data-status');
         let showRow = true;
-        
-        // Status filter
+
         if (statusFilter !== 'all' && rowStatus !== statusFilter) {
             showRow = false;
         }
-        
-        // Date filters would be implemented here with actual date data
-        
+
         row.style.display = showRow ? '' : 'none';
     });
 }
@@ -611,51 +643,106 @@ function filterStudents() {
 // ===== VERIFIER FILTERS =====
 function filterVerifiers() {
     const statusFilter = document.getElementById('verifierStatusFilter').value;
-    const dateFrom = document.getElementById('verifierDateFrom').value;
-    const dateTo = document.getElementById('verifierDateTo').value;
-    
     const rows = document.querySelectorAll('#verifiersTableBody tr');
-    
+
     rows.forEach(row => {
         const rowStatus = row.getAttribute('data-status');
         let showRow = true;
-        
-        // Status filter
+
         if (statusFilter !== 'all' && rowStatus !== statusFilter) {
             showRow = false;
         }
-        
-        // Date filters would be implemented here with actual date data
-        
+
         row.style.display = showRow ? '' : 'none';
+    });
+}
+function viewOpportunity(op) {
+    op = JSON.parse(decodeURIComponent(op));
+
+    openOpportunityDetails(op.name, {
+        duration: op.duration,
+        startDate: op.start_date,
+        description: op.description,
+        skills: op.skills ? op.skills.split(',') : [],
+        applicants: op.max_applicants || 0,
+        futureOpportunities: op.future_opportunities,
+        prerequisites: ''
     });
 }
 
 // ===== LOGIN =====
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
     clearAllErrors('loginForm');
+
     let valid = true;
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     const captchaInput = document.getElementById('loginCaptchaInput').value.trim();
 
-    if (!email || !isValidEmail(email)) { showError('loginEmailErr'); document.getElementById('loginEmail').classList.add('error'); valid = false; }
-    if (!password) { showError('loginPasswordErr','Please enter your password'); document.getElementById('loginPassword').classList.add('error'); valid = false; }
-    if (!captchaInput) { showError('loginCaptchaErr','Please enter the captcha code'); valid = false; }
-    else if (captchaInput !== captchas.login) { showError('loginCaptchaErr','Captcha does not match. Please try again.'); valid = false; generateCaptcha('login'); }
+    if (!email || !isValidEmail(email)) {
+        showError('loginEmailErr');
+        document.getElementById('loginEmail').classList.add('error');
+        valid = false;
+    }
 
-    if (!valid) { shakeForm('loginForm'); return; }
+    if (!password) {
+        showError('loginPasswordErr', 'Please enter your password');
+        document.getElementById('loginPassword').classList.add('error');
+        valid = false;
+    }
 
-    showToast('Login successful! Redirecting...');
-    setTimeout(() => showDashboard(email), 1200);
-    generateCaptcha('login');
+    if (!captchaInput) {
+        showError('loginCaptchaErr', 'Please enter the captcha code');
+        valid = false;
+    } else if (captchaInput !== captchas.login) {
+        showError('loginCaptchaErr', 'Captcha does not match. Please try again.');
+        generateCaptcha('login');
+        valid = false;
+    }
+
+    if (!valid) {
+        shakeForm('loginForm');
+        return;
+    }
+
+    fetch('http://127.0.0.1:5000/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password,
+            remember: true
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.message) {
+            showToast('Login successful!');
+            setTimeout(() => {
+                showDashboard(email);
+                loadOpportunities();
+            }, 1000);
+        } else {
+            showToast(data.error || 'Login failed');
+            generateCaptcha('login');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Server error');
+        generateCaptcha('login');
+    });
 });
 
 // ===== SIGNUP =====
-document.getElementById('signupForm').addEventListener('submit', function(e) {
+document.getElementById('signupForm').addEventListener('submit', function (e) {
     e.preventDefault();
     clearAllErrors('signupForm');
+
     let valid = true;
     const name = document.getElementById('signupName').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
@@ -663,49 +750,142 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
     const confirmPassword = document.getElementById('signupConfirmPassword').value.trim();
     const captchaInput = document.getElementById('signupCaptchaInput').value.trim();
 
-    if (!name) { showError('signupNameErr'); document.getElementById('signupName').classList.add('error'); valid = false; }
-    if (!email || !isValidEmail(email)) { showError('signupEmailErr'); document.getElementById('signupEmail').classList.add('error'); valid = false; }
-    if (!password || password.length < 8) { showError('signupPasswordErr'); document.getElementById('signupPassword').classList.add('error'); valid = false; }
-    if (!confirmPassword || password !== confirmPassword) { showError('signupConfirmPasswordErr'); document.getElementById('signupConfirmPassword').classList.add('error'); valid = false; }
-    if (!captchaInput) { showError('signupCaptchaErr','Please enter the captcha code'); valid = false; }
-    else if (captchaInput !== captchas.signup) { showError('signupCaptchaErr','Captcha does not match.'); valid = false; generateCaptcha('signup'); }
+    if (!name) {
+        showError('signupNameErr');
+        document.getElementById('signupName').classList.add('error');
+        valid = false;
+    }
 
-    if (!valid) { shakeForm('signupForm'); return; }
-    showToast('Account created successfully!');
-    generateCaptcha('signup');
-    this.reset(); checkStrength('');
-    setTimeout(() => showPage('loginPage'), 1500);
+    if (!email || !isValidEmail(email)) {
+        showError('signupEmailErr');
+        document.getElementById('signupEmail').classList.add('error');
+        valid = false;
+    }
+
+    if (!password || password.length < 8) {
+        showError('signupPasswordErr');
+        document.getElementById('signupPassword').classList.add('error');
+        valid = false;
+    }
+
+    if (!confirmPassword || password !== confirmPassword) {
+        showError('signupConfirmPasswordErr');
+        document.getElementById('signupConfirmPassword').classList.add('error');
+        valid = false;
+    }
+
+    if (!captchaInput) {
+        showError('signupCaptchaErr', 'Please enter the captcha code');
+        valid = false;
+    } else if (captchaInput !== captchas.signup) {
+        showError('signupCaptchaErr', 'Captcha does not match.');
+        generateCaptcha('signup');
+        valid = false;
+    }
+
+    if (!valid) {
+        shakeForm('signupForm');
+        return;
+    }
+
+    fetch('http://127.0.0.1:5000/signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            full_name: name,
+            email: email,
+            password: password,
+            confirm_password: confirmPassword
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.message) {
+            showToast('Signup successful!');
+            this.reset();
+            checkStrength('');
+            generateCaptcha('signup');
+            setTimeout(() => {
+                showPage('loginPage');
+            }, 1000);
+        } else {
+            showToast(data.error || 'Signup failed');
+            generateCaptcha('signup');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Server error');
+        generateCaptcha('signup');
+    });
 });
 
-// ===== FORGOT =====
-document.getElementById('forgotForm').addEventListener('submit', function(e) {
+// ===== FORGOT PASSWORD =====
+document.getElementById('forgotForm').addEventListener('submit', function (e) {
     e.preventDefault();
     clearAllErrors('forgotForm');
+
     let valid = true;
     const email = document.getElementById('forgotEmail').value.trim();
     const captchaInput = document.getElementById('forgotCaptchaInput').value.trim();
 
-    if (!email || !isValidEmail(email)) { showError('forgotEmailErr'); document.getElementById('forgotEmail').classList.add('error'); valid = false; }
-    if (!captchaInput) { showError('forgotCaptchaErr','Please enter the captcha code'); valid = false; }
-    else if (captchaInput !== captchas.forgot) { showError('forgotCaptchaErr','Captcha does not match.'); valid = false; generateCaptcha('forgot'); }
+    if (!email || !isValidEmail(email)) {
+        showError('forgotEmailErr');
+        document.getElementById('forgotEmail').classList.add('error');
+        valid = false;
+    }
 
-    if (!valid) { shakeForm('forgotForm'); return; }
-    showToast('Reset link sent to your email!');
-    generateCaptcha('forgot');
-    this.reset();
+    if (!captchaInput) {
+        showError('forgotCaptchaErr', 'Please enter the captcha code');
+        valid = false;
+    } else if (captchaInput !== captchas.forgot) {
+        showError('forgotCaptchaErr', 'Captcha does not match.');
+        generateCaptcha('forgot');
+        valid = false;
+    }
+
+    if (!valid) {
+        shakeForm('forgotForm');
+        return;
+    }
+
+    fetch('http://127.0.0.1:5000/forgot-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        showToast(data.message || 'Reset link sent');
+        generateCaptcha('forgot');
+        this.reset();
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Server error');
+        generateCaptcha('forgot');
+    });
 });
 
-// Clear errors on input
+// ===== CLEAR INPUT ERRORS =====
 document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', function() {
+    input.addEventListener('input', function () {
         this.classList.remove('error');
         const err = this.closest('.form-group')?.querySelector('.error-msg');
         if (err) err.classList.remove('show');
     });
 });
 
-// Responsive sidebar
+// ===== RESPONSIVE SIDEBAR =====
 window.addEventListener('resize', () => {
     const toggle = document.getElementById('menuToggle');
-    if (toggle) toggle.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    if (toggle) {
+        toggle.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    }
 });
