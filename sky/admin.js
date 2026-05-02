@@ -391,6 +391,7 @@ const method = editId ? 'PUT' : 'POST';
     console.error(err);
     showToast('Server error');
 });
+});
 function loadOpportunities() {
     fetch('https://guatar-foundation-admin.onrender.com/opportunities', {
         credentials: 'include'
