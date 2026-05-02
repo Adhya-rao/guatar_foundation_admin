@@ -22,6 +22,8 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
 )
+
+app.config['SESSION_COOKIE_DOMAIN'] = ".onrender.com"
 CORS(app,
      supports_credentials=True,
      resources={r"/*": {
